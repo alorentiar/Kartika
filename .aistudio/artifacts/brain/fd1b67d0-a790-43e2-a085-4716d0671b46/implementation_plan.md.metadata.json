@@ -1,0 +1,6 @@
+{
+  "summary":  "Rencana implementasi modul Autentikasi KARTIKA yang mencakup Halaman Login dan Registrasi Akun dengan kredensial dummy pra-konfigurasi untuk 3 persona instansi, tombol Quick-Login satu klik, persistensi sesi via localStorage, serta proteksi sesi terintegrasi.",
+  "updatedAt":  "2026-10-29T01:41:06.012899230Z",
+  "requestFeedback":  true,
+  "userFacing":  true
+}

@@ -1,0 +1,6 @@
+{
+  "name": "KARTIKA - Kepatuhan Audit Risiko & Keamanan Aplikasi",
+  "description": "Perangkat bantu audit otomatis keamanan siber (OWASP Top 10) dan detektor eksposur data pribadi (PII) dengan pemetaan kepatuhan UU PDP dan standar BSSN.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
