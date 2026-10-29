@@ -1,4 +1,34 @@
 services:
+  # -------------------------------------------------------------
+  # Service 1: PostgreSQL 16 Enterprise Database
+  # -------------------------------------------------------------
+  kartika-db:
+    image: postgres:16-alpine
+    container_name: kartika-postgres-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: kartika_audit
+      POSTGRES_USER: kartika_admin
+      POSTGRES_PASSWORD: KartikaAuditSecret#2026
+    volumes:
+      - kartika_pgdata:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    ports:
+      # Bound to loopback interface on VPS for defense-in-depth isolation
+      - "127.0.0.1:5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kartika_admin -d kartika_audit"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    labels:
+      org.opencontainers.image.title: "KARTIKA PostgreSQL Database"
+      org.opencontainers.image.description: "Database relasional KARTIKA dengan volume data persisten"
+
+  # -------------------------------------------------------------
+  # Service 2: KARTIKA Tactical Application & Scanner Engine
+  # -------------------------------------------------------------
   kartika-app:
     build:
       context: .
@@ -6,11 +36,20 @@ services:
     image: kartika-audit:latest
     container_name: kartika-audit-platform
     restart: unless-stopped
+    depends_on:
+      kartika-db:
+        condition: service_healthy
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=production
-      - PORT=3000
+      NODE_ENV: production
+      PORT: 3000
+      DB_HOST: kartika-db
+      DB_PORT: 5432
+      DB_USER: kartika_admin
+      DB_PASSWORD: KartikaAuditSecret#2026
+      DB_NAME: kartika_audit
+      DATABASE_URL: postgresql://kartika_admin:KartikaAuditSecret#2026@kartika-db:5432/kartika_audit
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/health"]
       interval: 30s
@@ -18,6 +57,10 @@ services:
       retries: 3
       start_period: 10s
     labels:
-      org.opencontainers.image.title: "KARTIKA"
+      org.opencontainers.image.title: "KARTIKA Application"
       org.opencontainers.image.description: "Kepatuhan Audit Risiko & Teknologi Informasi Keamanan Aplikasi"
       org.opencontainers.image.version: "1.0.0"
+
+volumes:
+  kartika_pgdata:
+    driver: local

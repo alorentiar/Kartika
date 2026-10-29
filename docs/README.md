@@ -21,6 +21,7 @@ Seluruh dokumen disusun dalam format **Dwibahasa (Bilingual: Bahasa Indonesia & 
 | **BSD** | **Backend Schema Documentation**<br>*(Dokumen Skema Basis Data)* | [`BSD_Backend_Schema_Documentation.md`](./BSD_Backend_Schema_Documentation.md) | Desain Entity-Relationship Diagram (ERD) lengkap, kamus data terperinci untuk 7 entitas relasional (`Pengguna`, `Target_Sistem`, `Sesi_Audit`, `Temuan_Teknis`, `Regulasi_Hukum`, `Pemetaan_Kepatuhan`, `Laporan_Kepatuhan`) serta skema jejak audit `Audit_Trail`. |
 | **IPD** | **Implementation Plan Documentation**<br>*(Dokumen Rencana Implementasi)* | [`IPD_Implementation_Plan_Documentation.md`](./IPD_Implementation_Plan_Documentation.md) | Peta jalan rekayasa perangkat lunak 6 fase, matriks verifikasi pengujian sistem (*Verification Matrix*), gerbang jaminan kualitas, serta panduan pengoperasian dan deployment (*Runbook Guide*). |
 | **DOCKER** | **Container Deployment Guide**<br>*(Panduan Kontainer Docker)* | [`../DOCKER.md`](../DOCKER.md) | Panduan lengkap build multi-stage image Docker, orkestrasi via `docker compose`, pemeriksaan probe kesehatan `/health`, dan konfigurasi port. |
+| **VPS DEPLOY** | **Production VPS Deployment Guide**<br>*(Panduan Deployment VPS)* | [`../VPS_DEPLOYMENT.md`](../VPS_DEPLOYMENT.md) | Panduan komprehensif deployment di server VPS Ubuntu/Debian: PostgreSQL persisten, Nginx SSL Let's Encrypt, UFW Firewall, dan backup otomatis. |
 
 ---
 

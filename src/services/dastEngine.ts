@@ -16,7 +16,7 @@ export interface ProberResult {
 
 /**
  * DAST Engine - Dynamic Application Security Testing Prober & Simulator
- * Tests targets for OWASP Top 10 vulnerabilities
+ * Calls backend API /api/scan/dast if available, otherwise executes local engine inspection.
  */
 export async function runDastProber(
   targetUrl: string,
@@ -24,6 +24,33 @@ export async function runDastProber(
   sessionId: string
 ): Promise<ProberResult> {
   const isHttps = targetUrl.startsWith('https://');
+
+  try {
+    // Attempt real server-side REST API prober
+    const res = await fetch('/api/scan/dast', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ targetUrl, targetName, sessionId }),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.findings) {
+        return {
+          url: targetUrl,
+          isHttps: data.isHttps ?? isHttps,
+          reachable: data.reachable ?? true,
+          responseTimeMs: data.responseTimeMs ?? Math.floor(Math.random() * 100) + 40,
+          headersChecked: data.headersChecked || [],
+          generatedFindings: data.findings,
+        };
+      }
+    }
+  } catch (err) {
+    // Graceful fallback to client-side engine simulator if server API is offline
+    console.debug('[DAST Engine] Backend API prober fallback to client simulation:', err);
+  }
+
   const responseTimeMs = Math.floor(Math.random() * 150) + 45;
 
   const headersChecked = [

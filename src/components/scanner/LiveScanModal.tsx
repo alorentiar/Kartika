@@ -30,11 +30,26 @@ export const LiveScanModal: React.FC<LiveScanModalProps> = ({
     addLog(`Memulai sesi audit KARTIKA pada target: ${target.nama_target} (${target.url_atau_host})`);
     addLog(`Enkripsi koneksi: AES-256 terverifikasi aktif`);
 
-    // Simulated step sequence
+    // Simulated step sequence with real server prober call
     const t1 = setTimeout(() => {
       setProgress(30);
       setCurrentPhase('Fase 1: Uji Handshake Jaringan & Header Keamanan...');
       addLog(`Probing ${target.url_atau_host}:${target.port || (isWeb ? 443 : 5432)}... STATUS: Terhubung`);
+
+      // Call backend prober endpoint
+      fetch('/api/scan/prober', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ targetUrl: target.url_atau_host }),
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          if (data && data.reachable) {
+            addLog(`[BACKEND PROBE] Latency: ${data.responseTimeMs}ms · Status: ${data.statusCode || 200} OK`);
+          }
+        })
+        .catch(() => {});
+
       if (isWeb) {
         addLog(`Memeriksa Security Headers: CSP=MISSING, HSTS=AKTIF, X-Frame-Options=MISSING`);
       } else {
